@@ -18,11 +18,11 @@ manager.add_command("runserver", Server(
     host = '0.0.0.0')
 )
 
-@app.route('/send', methods=['GET'])
+@app.route('/send', methods=['POST'])
 def send():
-    content = request.args.get('message')
-    receiver = request.args.get('to')
-    sender = request.args.get('from')
+    content = request.form['message']
+    receiver = request.form['to']
+    sender = request.form['from']
     
     if content and receiver and sender:
         message = Message(sender= sender, receiver = receiver, content = content)
@@ -53,9 +53,14 @@ def delete():
 
 @app.route('/hello')
 def hello_world():
-    return 'Hello hello !'
-    
+    return 'Hello Hello'
 
+@app.route('/testPost', methods=['GET', 'POST'])
+def testPost():
+    print "On est au debut"
+    print json.dumps(request.form)
+    print "On est a la fin"
+    return "Post tested"
 
 if __name__ == "__main__":
     manager.run()
