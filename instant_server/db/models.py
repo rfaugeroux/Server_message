@@ -1,14 +1,19 @@
 # -*-coding:Utf-8 -*
-from mongoengine import Document, StringField, register_connection, DateTimeField
+from mongoengine import Document, StringField, DateTimeField
+from mongoengine import connect  # , register_connection
+
 from flask import url_for
 import datetime
 
 
-PRODUCTION_URI = ''  # TODO change this for actual db
-PRODUCTION_ALIAS = ''
+#PRODUCTION_URI = 'mongodb://localhost:27020/mydb'  # change this to production URI
+#PRODUCTION_ALIAS = 'keo-local'  # 'keo-production'
 
-print "connecting to question-tree database"
-register_connection(PRODUCTION_ALIAS, 'instant-server-production', host=PRODUCTION_URI)
+
+print "connecting to keo-database..."
+#register_connection(PRODUCTION_ALIAS, 'instant-server-production', host=PRODUCTION_URI)
+
+connect('keo')
 
 
 class Message(Document):
