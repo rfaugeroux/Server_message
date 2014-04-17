@@ -55,7 +55,7 @@ def signup():
 def get_users():
     users = []
     for user in models.User.objects:
-        users.append({'email': user.email, 'phone number': user.phone_number, 'password': user.password})
+        users.append({'email': user.email, 'phone number': user.phone_number, 'password': "*******"})
     return json.dumps(users)
 
 
