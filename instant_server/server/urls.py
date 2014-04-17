@@ -50,7 +50,10 @@ def signup():
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    return json.dumps(models.User.objects())
+    users = []
+    for user in models.User.objects:
+        users.append({'email': user.email, 'phone number': user.phone_number, 'password': user.password})
+    return json.dumps(users)
 
 
 

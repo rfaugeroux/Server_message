@@ -33,5 +33,4 @@ class Message(Document):
 class User(Document):
     phone_number = StringField(max_length=255, required=True)
     email = EmailField(required=True)
-    login = StringField(max_length=255, required=True)  # TODO -> use authentification server...
     password = StringField(max_length=255, required=True)
