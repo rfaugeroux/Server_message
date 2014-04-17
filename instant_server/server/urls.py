@@ -48,6 +48,10 @@ def signup():
     new_user = models.User(email=email, phone_number=phone_number, password=password)
     user.save()
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    return json.dumps(models.User.objects())
+
 
 
 @app.route('/hello')
