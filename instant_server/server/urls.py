@@ -7,9 +7,11 @@ from instant_server.db import models
 
 @app.route('/send', methods=['POST'])
 def send():
+
     content = request.form['message']
     receiver = request.form['to']
     sender = request.form['from']
+
     
     if content and receiver and sender:
         message = models.Message(sender=sender, receiver=receiver, content=content)
@@ -37,15 +39,18 @@ def delete():
     models.Message.objects(created_at__lte=time_barrier).delete()
     return "Messages created more than 2 minutes ago deleted."
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    email = request.form['email']
+    password = request.form['password']
+    phone_number = request.form['phone_number']
+
+    new_user = models.User(email=email, phone_number=phone_number, password=password)
+    user.save()
+
+
 
 @app.route('/hello')
 def hello_world():
     return 'Hello Hello'
-
-@app.route('/testPost', methods=['GET', 'POST'])
-def testPost():
-    print "On est au debut"
-    print json.dumps(request.form)
-    print "On est a la fin"
-    return "Post tested"
 

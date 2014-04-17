@@ -1,19 +1,19 @@
 # -*-coding:Utf-8 -*
-from mongoengine import Document, StringField, DateTimeField, EmailField
+from mongoengine import Document, StringField, DateTimeField, EmailField, BooleanField
 from mongoengine import connect  # , register_connection
 
 from flask import url_for
 import datetime
 
 
-#PRODUCTION_URI = 'mongodb://localhost:27020/mydb'  # change this to production URI
+PRODUCTION_URI = 'mongodb://keo_user:GMRJ4keo@ds027338.mongolab.com:27338/keo'  # change this to production URI
 #PRODUCTION_ALIAS = 'keo-local'  # 'keo-production'
 
 
 print "connecting to keo-database..."
 #register_connection(PRODUCTION_ALIAS, 'instant-server-production', host=PRODUCTION_URI)
 
-connect('keo')
+connect('keo', host=PRODUCTION_URI)
 
 
 class Message(Document):
@@ -21,12 +21,8 @@ class Message(Document):
     sender = StringField(max_length=255, required=True)
     receiver = StringField(max_length=255, required=True)
     content = StringField(required=True)
+    delivered = BooleanField(default=False, required=True)
 
-    def get_absolute_url(self):
-        return url_for('post', kwargs={"slug": self.slug})
-
-    def __unicode__(self):
-        return self.title
 
     meta = {
         'indexes': ['-created_at', 'receiver'],
@@ -35,7 +31,6 @@ class Message(Document):
 
 
 class User(Document):
-    name = StringField(max_length=255, required=True)
     phone_number = StringField(max_length=255, required=True)
     email = EmailField(required=True)
     login = StringField(max_length=255, required=True)  # TODO -> use authentification server...
