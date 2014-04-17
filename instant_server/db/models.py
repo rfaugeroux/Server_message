@@ -1,7 +1,7 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, DateTimeField, EmailField, BooleanField
 from mongoengine import connect  # , register_connection
-from auth_server.db.models import User
+from auth_server.db import models
 
 import datetime
 
@@ -30,5 +30,5 @@ class Message(Document):
     }
 
 
-class Global_User(User):
+class Global_User(models.User):
     last_update = DateTimeField(default=datetime.datetime.min,required=True)
