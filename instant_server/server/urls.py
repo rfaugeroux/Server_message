@@ -41,12 +41,15 @@ def delete():
 
 @app.route('/signup', methods=['POST'])
 def signup():
+    print "Entering signup"
     email = request.form['email']
     password = request.form['password']
     phone_number = request.form['phone_number']
 
     new_user = models.User(email=email, phone_number=phone_number, password=password)
-    user.save()
+    new_user.save()
+
+    return "User added to the database !"
 
 @app.route('/users', methods=['GET'])
 def get_users():
