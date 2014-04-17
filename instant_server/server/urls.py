@@ -3,6 +3,7 @@ import datetime
 from flask import request
 from instant_server.server import app
 from instant_server.db import models
+from mongoengine.queryset import DoesNotExist
 
 
 @app.route('/send', methods=['POST'])
@@ -53,10 +54,23 @@ def signup():
 
     return "true"
 
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+
+    try:
+        user = models.User.objects.get(email=email, password=password)
+        return user.phone_number
+    except DoesNotExist:
+        return ""
+
+    return ""
+
 @app.route('/users', methods=['GET'])
 def get_users():
     users = []
-    for user in models.User.objects:
+    for user in models.Global_User.objects:
         users.append({'email': user.email, 'phone number': user.phone_number, 'password': "*******"})
     return json.dumps(users)
 
