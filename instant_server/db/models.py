@@ -18,6 +18,7 @@ connect('keo', host=PRODUCTION_URI)
 
 class Message(Document):
     created_at = DateTimeField(default=datetime.datetime.now, required=True)
+    delivery_time = DateTimeField(default=datetime.datetime.now, required=True)
     sender = StringField(max_length=255, required=True)
     receiver = StringField(max_length=255, required=True)
     content = StringField(required=True)

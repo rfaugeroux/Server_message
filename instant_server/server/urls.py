@@ -12,13 +12,20 @@ def send():
     content = request.form['message']
     receiver = request.form['to']
     sender = request.form['from']
-
     
-    if content and receiver and sender:
-        message = models.Message(sender=sender, receiver=receiver, content=content)
-        message.save()
+    try:
+        minutes = int(request.form['delivery_time'])
+    except ValueError:
+        minutes = 0
 
-    return "Message sent !"
+    delta = datetime.timedelta(minutes = minutes)
+
+
+    message = models.Message(sender=sender, receiver=receiver, 
+                             content=content, delivery_time=datetime.datetime.now() + delta)
+    message.save()
+
+    return "Message sent"
 
 
 @app.route('/receive', methods=['GET'])
@@ -27,8 +34,9 @@ def receive():
     messages_to_receiver = []
 
     """Collect the messages sent to the receiver"""
-    for message in models.Message.objects(receiver=receiver):
-        messages_to_receiver.append({'from': message.sender, 'message': message.content})
+    for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now()):
+        messages_to_receiver.append({'from': message.sender, 'message': message.content,
+                                     'created_at': str(message.created_at)})
 
     return json.dumps(messages_to_receiver)
 
@@ -56,7 +64,6 @@ def signup():
 
 @app.route('/login', methods=['POST'])
 def login():
-    print "debut"
     email = request.form['email']
     password = request.form['password']
 
