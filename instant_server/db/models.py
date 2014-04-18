@@ -27,7 +27,7 @@ class Message(Document):
 
     meta = {
         'indexes': ['-created_at', 'receiver'],
-        'ordering': ['-created_at']
+        'ordering': ['-delivery_time']
     }
 
 
