@@ -46,26 +46,28 @@ def signup():
     password = request.form['password']
     phone_number = request.form['phone_number']
 
-    if models.User.objects(email=email):
+    if models.Global_User.objects(email=email):
         return "false"
 
-    new_user = models.User(email=email, phone_number=phone_number, password=password)
+    new_user = models.Global_User(email=email, phone_number=phone_number, password=password)
     new_user.save()
 
     return "true"
 
 @app.route('/login', methods=['POST'])
 def login():
+    print "debut"
     email = request.form['email']
     password = request.form['password']
 
     try:
         user = models.User.objects.get(email=email, password=password)
+        print user.phone_number
         return user.phone_number
     except DoesNotExist:
-        return ""
-
-    return ""
+        return "DoesNotExist"
+         
+    return "NTM"
 
 @app.route('/users', methods=['GET'])
 def get_users():

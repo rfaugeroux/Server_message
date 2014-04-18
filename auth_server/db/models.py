@@ -3,7 +3,7 @@ from mongoengine import Document, StringField, DateTimeField, EmailField, Boolea
 
 class User(Document):
     phone_number = StringField(max_length=255, required=True)
-    email = EmailField(required=True)
+    email = EmailField(required=True, unique=True)
     password = StringField(max_length=255, required=True)
 
     meta = {
