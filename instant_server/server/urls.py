@@ -57,10 +57,15 @@ def signup():
     if models.Global_User.objects(email=email):
         return "false"
 
-    new_user = models.Global_User(email=email, phone_number=phone_number, password=password)
-    new_user.save()
+    try:
+        new_user = models.Global_User(email=email, phone_number=phone_number, password=password)
+        new_user.save()
+        return "true"
 
-    return "true"
+    except ValidationError, e:
+        print e
+
+    return "false"
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -69,8 +74,8 @@ def login():
 
     try:
         user = models.User.objects.get(email=email, password=password)
-        print user.phone_number
         return user.phone_number
+    
     except DoesNotExist:
         return "DoesNotExist"
          
