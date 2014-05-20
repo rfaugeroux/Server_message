@@ -5,21 +5,35 @@ from instant_server.server import app
 from instant_server.db import models
 from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
+from gcm import GCM
 
+GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 
 @app.route('/send', methods=['POST'])
 def send():
 
     content = request.form['message']
-    receiver = request.form['to']
+    receiver_id = request.form['to']
     sender = request.form['from']
     minutes = request.form.get('delivery_time', default=0, type=int)
 
     delta = datetime.timedelta(minutes = minutes)
 
-    message = models.Message(sender=sender, receiver=receiver, 
+    message = models.Message(sender=sender, receiver=receiver_id, 
                              content=content, delivery_time=datetime.datetime.now() + delta)
     message.save()
+
+    user = models.Global_User.objects.get(email=receiver_id)
+    reg_id = None
+    if user.os=="android" and user.reg_id:
+        reg_id = user.reg_id
+
+    if minutes < 1 and reg_id :
+        gcm = GCM(GCM_API_KEY)
+        data = {'Message' : content}         
+        print data
+        gcm.plaintext_request(registration_id=reg_id, data=data)
+
 
     return "Message sent"
 
@@ -27,12 +41,11 @@ def send():
 @app.route('/receive', methods=['GET'])
 def receive():
     receiver = request.args.get('to')
-    timestamp = request.args.get('timestamp')
+    #timestamp = request.args.get('timestamp')
+
+    timestamp = datetime.datetime.now() - datetime.timedelta(weeks=8)
 
     messages_to_receiver = []
-
-    if timestamp > datetime.datetime.now():
-        return "['Wrong timestamp: in the future']"
 
     """Collect the messages sent to the receiver"""
     for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now(),
@@ -45,9 +58,9 @@ def receive():
 
 @app.route('/delete', methods=['GET'])
 def delete():
-    t = datetime.timedelta(minutes=2)
+    t = datetime.timedelta(minutes=3)
     time_barrier = datetime.datetime.now() - t
-    models.Message.objects(created_at__lte=time_barrier).delete()
+    models.Message.objects(receiver="", delivery_time__lte=time_barrier).delete()
     return "Messages created more than 2 minutes ago deleted."
 
 @app.route('/checkAccount', methods=['GET'])
@@ -65,7 +78,6 @@ def signup():
     phone_number = request.form['phone_number']
     os = request.form['os']
     reg_id = request.form.get('reg_id', default=None)
-
 
     if models.Global_User.objects(email=email):
         return "existe_deja"
@@ -106,14 +118,12 @@ def sendRegId():
     reg_id = request.form['reg_id']
 
 
-
 @app.route('/users', methods=['GET'])
 def get_users():
     users = []
     for user in models.Global_User.objects:
         users.append({'email': user.email, 'phone number': user.phone_number, 'password': "*******"})
     return json.dumps(users)
-
 
 
 @app.route('/hello')
