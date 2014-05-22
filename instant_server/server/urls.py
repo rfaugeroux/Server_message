@@ -33,12 +33,12 @@ def send():
     if user.reg_id and minutes < 1:
         if user.os=="android":
             gcm = GCM(GCM_API_KEY)
-            data = {'message' : content, 'id':message.id}         
+            data = {'message' : content, 'id': str(message.id)}         
             print data
             try:
                 res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
             except GCMException, e:
-                print str(e)
+                print e
 
         if user.os=="ios" and False:
             con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
