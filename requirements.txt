@@ -5,7 +5,6 @@ Werkzeug==0.9.4
 argparse==1.2.1
 itsdangerous==0.24
 mongoengine==0.8.7
-pyOpenSSL==0.14
 pycparser==2.10
 pymongo==2.7
 python-gcm==0.1.5
