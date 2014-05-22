@@ -8,6 +8,7 @@ from mongoengine import ValidationError
 from gcm import GCM
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
+GCM_API_KEY2 = "AIzaSyBGEgorCDbw3XQSzIUwGZbJRq-5AUj9lII"
 
 @app.route('/send', methods=['POST'])
 def send():
@@ -29,13 +30,13 @@ def send():
         reg_id = user.reg_id
 
     if minutes < 1 and reg_id :
-        gcm = GCM(GCM_API_KEY)
+        gcm = GCM(GCM_API_KEY2)
         data = {'Message' : content}         
         print data
         try:
             gcm.plaintext_request(registration_id=reg_id, data=data)
         except:
-            print sys.exc_info()[0]
+            print sys.exc_info()[0] 
 
 
     return "Message sent"
