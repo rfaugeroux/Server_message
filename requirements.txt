@@ -2,9 +2,15 @@ Flask==0.10.1
 Jinja2==2.7.2
 MarkupSafe==0.19
 Werkzeug==0.9.4
+apns-client==0.1.8
 argparse==1.2.1
+cffi==0.8.2
+cryptography==0.4
 itsdangerous==0.24
 mongoengine==0.8.7
+pyOpenSSL==0.14
+pycparser==2.10
 pymongo==2.7
 python-gcm==0.1.5
+six==1.6.1
 wsgiref==0.1.2

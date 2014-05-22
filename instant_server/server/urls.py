@@ -26,13 +26,14 @@ def send():
     message = models.Message(sender=sender, receiver=receiver_id, 
                              content=content, delivery_time=datetime.datetime.now() + delta)
     message.save()
+    print "Message id: " + str(message.id)
 
     user = models.Global_User.objects.get(email=receiver_id)
 
     if user.reg_id and minutes < 1:
         if user.os=="android":
             gcm = GCM(GCM_API_KEY)
-            data = {'Message' : content}         
+            data = {'message' : content, 'id':message.id}         
             print data
             try:
                 res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
@@ -67,6 +68,21 @@ def receive():
     #timestamp = request.args.get('timestamp')
 
     timestamp = datetime.datetime.now() - datetime.timedelta(weeks=8)
+
+    messages_to_receiver = []
+
+    """Collect the messages sent to the receiver"""
+    for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now(),
+                                          delivery_time__gte=timestamp):
+        messages_to_receiver.append({'from': message.sender, 'message': message.content,
+                                     'created_at': str(message.created_at)})
+
+    return json.dumps(messages_to_receiver)
+
+@app.route('/receive_single', methods=['GET'])
+def receive():
+    receiver = request.args.get('id')
+    #timestamp = request.args.get('timestamp')
 
     messages_to_receiver = []
 
