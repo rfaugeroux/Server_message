@@ -6,6 +6,7 @@ from instant_server.db import models
 from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
 from gcm import GCM
+from gcm.gcm import GCMException, GCMMalformedJsonException, GCMConnectionException, GCMAuthenticationException, GCMTooManyRegIdsException, GCMNoCollapseKeyException, GCMInvalidTtlException, GCMMissingRegistrationException, GCMMismatchSenderIdException, GCMNotRegisteredException, GCMMessageTooBigException, GCMInvalidRegistrationException, GCMUnavailableException
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 GCM_API_KEY2 = "AIzaSyBGEgorCDbw3XQSzIUwGZbJRq-5AUj9lII"
@@ -36,9 +37,30 @@ def send():
         try:
             res = gcm.plaintext_request(registration_id=reg_id, data=data)
             print res
-        except:
-            print sys.exc_info()[0] 
-
+        except GCMMalformedJsonException:
+            print "Malformed"
+        except GCMConnectionException:
+            print "Connection"
+        except GCMAuthenticationException:
+            print "Authentication"
+        except GCMTooManyRegIdsException:
+            print "Too many red id"
+        except GCMNoCollapseKeyException:
+            print "Collapse"
+        except GCMInvalidTtlException:
+            print "Missing"
+        except GCMMissingRegistrationException:
+            print "Registration"
+        except GCMMismatchSenderIdException:
+            print "Mismatch"
+        except GCMNotRegisteredException:
+            print "Not registered"
+        except GCMMessageTooBigException:
+            print "Big message"
+        except GCMInvalidRegistrationException:
+            print "Invalid"
+        except GCMUnavailableException:
+            print "Unavailable"
 
     return "Message sent"
 
