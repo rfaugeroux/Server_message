@@ -32,7 +32,10 @@ def send():
         gcm = GCM(GCM_API_KEY)
         data = {'Message' : content}         
         print data
-        gcm.plaintext_request(registration_id=reg_id, data=data)
+        try:
+            gcm.plaintext_request(registration_id=reg_id, data=data)
+        except:
+            print sys.exc_info()[0]
 
 
     return "Message sent"
