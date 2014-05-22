@@ -9,7 +9,6 @@ from gcm import GCM
 from gcm.gcm import GCMException, GCMMalformedJsonException, GCMConnectionException, GCMAuthenticationException, GCMTooManyRegIdsException, GCMNoCollapseKeyException, GCMInvalidTtlException, GCMMissingRegistrationException, GCMMismatchSenderIdException, GCMNotRegisteredException, GCMMessageTooBigException, GCMInvalidRegistrationException, GCMUnavailableException
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
-GCM_API_KEY2 = "AIzaSyBGEgorCDbw3XQSzIUwGZbJRq-5AUj9lII"
 
 @app.route('/send', methods=['POST'])
 def send():
