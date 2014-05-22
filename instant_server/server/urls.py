@@ -31,7 +31,7 @@ def send():
         reg_id = user.reg_id
 
     if minutes < 1 and reg_id :
-        gcm = GCM(GCM_API_KEY2)
+        gcm = GCM(GCM_API_KEY)
         data = {'Message' : content}         
         print data
         try:
