@@ -80,12 +80,12 @@ def receive():
     return json.dumps(messages_to_receiver)
 
 @app.route('/receive_single', methods=['GET'])
-def receive():
+def receive_single():
     id = request.args.get('id')
     messages_to_receiver = []
 
     """Collect the message requested by the receiver"""
-    message  = models.Message.objects.get(id=id):
+    message  = models.Message.objects.get(id=id)
     messages_to_receiver.append({'from': message.sender, 'message': message.content,
                                  'created_at': str(message.created_at)})
 
