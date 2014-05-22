@@ -7,7 +7,7 @@ from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
 from gcm import GCM
 from gcm.gcm import GCMException
-from apnsclient import Message, APNs
+#from apnsclient import Message, APNs
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 passphrase = "NapoleonGrouchy"
@@ -40,7 +40,7 @@ def send():
             except GCMException, e:
                 print str(e)
 
-        if user.os=="ios":
+        if user.os=="ios" and False:
             con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
             message = Message([user.reg_id], alert="Une seule notif", badge=1)
             srv = APNs(con)
@@ -67,7 +67,7 @@ def receive():
     receiver = request.args.get('to')
     #timestamp = request.args.get('timestamp')
 
-    timestamp = datetime.datetime.now() - datetime.timedelta(weeks=8)
+    timestamp = datetime.datetime.now() - datetime.timedelta(weeks=15)
 
     messages_to_receiver = []
 
