@@ -34,5 +34,5 @@ class Message(Document):
 class Global_User(User):
     last_update = DateTimeField(default=datetime.datetime.min,required=True)
     os = StringField(max_length=255, required=True)
-    reg_id = StringField(max_length=255, required=False)
+    reg_id = StringField(max_length=255, default=None, required=True)
     

@@ -6,9 +6,12 @@ from instant_server.db import models
 from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
 from gcm import GCM
-from gcm.gcm import GCMException, GCMMalformedJsonException, GCMConnectionException, GCMAuthenticationException, GCMTooManyRegIdsException, GCMNoCollapseKeyException, GCMInvalidTtlException, GCMMissingRegistrationException, GCMMismatchSenderIdException, GCMNotRegisteredException, GCMMessageTooBigException, GCMInvalidRegistrationException, GCMUnavailableException
+from gcm.gcm import GCMException
+from apnsclient import Message, APNs
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
+passphrase = "NapoleonGrouchy"
+
 
 @app.route('/send', methods=['POST'])
 def send():
@@ -25,41 +28,35 @@ def send():
     message.save()
 
     user = models.Global_User.objects.get(email=receiver_id)
-    reg_id = None
-    if user.os=="android" and user.reg_id:
-        reg_id = user.reg_id
 
-    if minutes < 1 and reg_id :
-        gcm = GCM(GCM_API_KEY)
-        data = {'Message' : content}         
-        print data
-        try:
-            res = gcm.plaintext_request(registration_id=reg_id, data=data)
-            print res
-        except GCMMalformedJsonException:
-            print "Malformed"
-        except GCMConnectionException:
-            print "Connection"
-        except GCMAuthenticationException:
-            print "Authentication"
-        except GCMTooManyRegIdsException:
-            print "Too many red id"
-        except GCMNoCollapseKeyException:
-            print "Collapse"
-        except GCMInvalidTtlException:
-            print "Missing"
-        except GCMMissingRegistrationException:
-            print "Registration"
-        except GCMMismatchSenderIdException:
-            print "Mismatch"
-        except GCMNotRegisteredException:
-            print "Not registered"
-        except GCMMessageTooBigException:
-            print "Big message"
-        except GCMInvalidRegistrationException:
-            print "Invalid"
-        except GCMUnavailableException:
-            print "Unavailable"
+    if user.reg_id and minutes < 1:
+        if user.os=="android":
+            gcm = GCM(GCM_API_KEY)
+            data = {'Message' : content}         
+            print data
+            try:
+                res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
+            except GCMException, e:
+                print str(e)
+
+        if user.os=="ios":
+            con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
+            message = Message([user.reg_id], alert="Une seule notif", badge=1)
+            srv = APNs(con)
+            res = srv.send(message)
+            # Check failures. Check codes in APNs reference docs.
+            for token, reason in res.failed.items():
+                code, errmsg = reason
+                print "Device failed: {0}, reason: {1}".format(token, errmsg)
+
+            # Check failures not related to devices.
+            for code, errmsg in res.errors:
+                print "Error: ", errmsg
+
+            # Check if there are tokens that can be retried
+            if res.needs_retry():
+                # repeat with retry_message or reschedule your task
+                retry_message = res.retry()
 
     return "Message sent"
 
@@ -80,7 +77,6 @@ def receive():
                                      'created_at': str(message.created_at)})
 
     return json.dumps(messages_to_receiver)
-
 
 @app.route('/delete', methods=['GET'])
 def delete():
