@@ -34,7 +34,8 @@ def send():
         data = {'Message' : content}         
         print data
         try:
-            gcm.plaintext_request(registration_id=reg_id, data=data)
+            res = gcm.plaintext_request(registration_id=reg_id, data=data)
+            print res
         except:
             print sys.exc_info()[0] 
 
