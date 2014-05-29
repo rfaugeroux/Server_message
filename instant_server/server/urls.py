@@ -7,7 +7,7 @@ from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
 from gcm import GCM
 from gcm.gcm import GCMException
-from apnsclient import Message, APNs
+#from apnsclient import Message, APNs
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 passphrase = "NapoleonGrouchy"
@@ -40,7 +40,7 @@ def send():
             except GCMException, e:
                 print e
 
-        if user.os=="ios" and True:
+        if user.os=="ios" and False:
             con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
             message = Message([user.reg_id], alert="Gauthier, tu as un nouveau message !", badge=1)
             srv = APNs(con)
