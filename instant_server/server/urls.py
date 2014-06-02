@@ -40,6 +40,7 @@ def send():
             except GCMException, e:
                 print e
 
+        #Not used
         if user.os=="ios" and False:
             con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
             message = Message([user.reg_id], alert="Gauthier, tu as un nouveau message !", badge=1)
