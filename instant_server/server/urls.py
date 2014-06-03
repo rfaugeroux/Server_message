@@ -79,7 +79,8 @@ def receive():
     for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now(),
                                           delivery_time__gte=timestamp):
         messages_to_receiver.append({'from': message.sender, 'message': message.content,
-                                     'created_at': str(message.created_at), 'keo_time': message.keo_time})
+                                     'photo'= message.photo,'created_at': str(message.created_at),
+                                     'keo_time': message.keo_time})
 
     return json.dumps(messages_to_receiver)
 
@@ -91,7 +92,8 @@ def receive_single():
     """Collect the message requested by the receiver"""
     message  = models.Message.objects.get(id=id)
     messages_to_receiver.append({'from': message.sender, 'message': message.content,
-                                 'created_at': str(message.created_at), 'keo_time': message.keo_time})
+                                 'photo': message.photo, created_at': str(message.created_at),
+                                 'keo_time': message.keo_time})
 
     return json.dumps(messages_to_receiver)
 
