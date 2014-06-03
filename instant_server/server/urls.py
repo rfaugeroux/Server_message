@@ -21,12 +21,14 @@ def send():
     receiver_id = request.form['to']
     sender = request.form['from']
     minutes = request.form.get('keo_time', default=0, type=int)
+    photo = request.form.get('photo', default="")
 
     delta = datetime.timedelta(minutes = minutes)
 
     #Save the message in the database
     message = models.Message(sender=sender, receiver=receiver_id, 
-                             content=content, delivery_time=datetime.datetime.now() + delta, keo_time=minutes)
+                             content=content, photo=photo,
+                             delivery_time=datetime.datetime.now() + delta, keo_time=minutes)
     message.save()
     print "Message id: " + str(message.id)
 
