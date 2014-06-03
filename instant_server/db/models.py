@@ -24,7 +24,7 @@ class Message(Document):
     receiver = StringField(max_length=255, required=True)
     content = StringField(required=True)
     delivered = BooleanField(default=False, required=True)
-    photo = StringField(max_length=255, default="", required=False)
+    photo = StringField(default="", required=False)
 
 
     meta = {
