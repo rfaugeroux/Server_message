@@ -16,6 +16,7 @@ passphrase = "NapoleonGrouchy"
 @app.route('/send', methods=['POST'])
 def send():
 
+    #Parse the request
     content = request.form['message']
     receiver_id = request.form['to']
     sender = request.form['from']
@@ -23,24 +24,26 @@ def send():
 
     delta = datetime.timedelta(minutes = minutes)
 
+    #Save the message in the database
     message = models.Message(sender=sender, receiver=receiver_id, 
-                             content=content, delivery_time=datetime.datetime.now() + delta)
+                             content=content, delivery_time=datetime.datetime.now() + delta, keo_time=minutes)
     message.save()
     print "Message id: " + str(message.id)
 
     user = models.Global_User.objects.get(email=receiver_id)
 
+    #Handle push notifications to android and ios
     if user.reg_id and minutes < 1:
         if user.os=="android":
             gcm = GCM(GCM_API_KEY)
-            data = {'sender' : sender, 'id': str(message.id)}         
+            data = {'sender' : sender, 'id': str(message.id), 'keo_time': message.keo_time}         
             print data
             try:
                 res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
             except GCMException, e:
                 print e
 
-        #Not used
+        #Not used yet
         if user.os=="ios" and False:
             con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
             message = Message([user.reg_id], alert="Gauthier, tu as un nouveau message !", badge=1)
@@ -76,7 +79,7 @@ def receive():
     for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now(),
                                           delivery_time__gte=timestamp):
         messages_to_receiver.append({'from': message.sender, 'message': message.content,
-                                     'created_at': str(message.created_at)})
+                                     'created_at': str(message.created_at), 'keo_time': message.keo_time})
 
     return json.dumps(messages_to_receiver)
 
@@ -88,7 +91,7 @@ def receive_single():
     """Collect the message requested by the receiver"""
     message  = models.Message.objects.get(id=id)
     messages_to_receiver.append({'from': message.sender, 'message': message.content,
-                                 'created_at': str(message.created_at)})
+                                 'created_at': str(message.created_at), 'keo_time': message.keo_time})
 
     return json.dumps(messages_to_receiver)
 

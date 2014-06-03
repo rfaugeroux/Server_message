@@ -1,5 +1,5 @@
 # -*-coding:Utf-8 -*
-from mongoengine import Document, StringField, DateTimeField, EmailField, BooleanField
+from mongoengine import Document, StringField, DateTimeField, EmailField, BooleanField, IntField
 from mongoengine import connect  # , register_connection
 from auth_server.db.models import User
 
@@ -19,10 +19,12 @@ connect('keo', host=PRODUCTION_URI)
 class Message(Document):
     created_at = DateTimeField(default=datetime.datetime.now, required=True)
     delivery_time = DateTimeField(default=datetime.datetime.now, required=True)
+    keo_time = IntField(min_value=0, default=0, required=True)
     sender = StringField(max_length=255, required=True)
     receiver = StringField(max_length=255, required=True)
     content = StringField(required=True)
     delivered = BooleanField(default=False, required=True)
+    photo = StringField(required=False)
 
 
     meta = {
