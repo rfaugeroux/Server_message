@@ -38,7 +38,7 @@ def send():
     if user.reg_id and minutes < 1:
         if user.os=="android":
             gcm = GCM(GCM_API_KEY)
-            data = {'sender' : sender, 'id': str(message.id), 'keo_time': message.keo_time}         
+            data = {'sender' : sender, 'id': str(message.id), 'keo_time': str(message.keo_time)}         
             print data
             try:
                 res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
