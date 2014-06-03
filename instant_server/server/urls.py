@@ -20,7 +20,7 @@ def send():
     content = request.form['message']
     receiver_id = request.form['to']
     sender = request.form['from']
-    minutes = request.form.get('delivery_time', default=0, type=int)
+    minutes = request.form.get('keo_time', default=0, type=int)
 
     delta = datetime.timedelta(minutes = minutes)
 
