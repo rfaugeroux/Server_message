@@ -44,6 +44,8 @@ def send():
                 res = gcm.plaintext_request(registration_id=user.reg_id, data=data)
             except GCMException, e:
                 print e
+            except Exception, e:
+                print e
 
         #Not used yet
         if user.os=="ios" and False:
