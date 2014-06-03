@@ -23,6 +23,8 @@ def send():
     minutes = request.form.get('keo_time', default=0, type=int)
     photo = request.form.get('photo', default="")
 
+    print "Photo length: " + str(len(photo))
+    
     delta = datetime.timedelta(minutes = minutes)
 
     #Save the message in the database
