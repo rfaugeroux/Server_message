@@ -84,7 +84,7 @@ def receive():
                                           delivery_time__gte=timestamp):
         messages_to_receiver.append({'from': message.sender, 'message': message.content,
                                      'photo': message.photo,'created_at': str(message.created_at),
-                                     'keo_time': message.keo_time})
+                                     'keo_time': str(message.keo_time)})
 
     return json.dumps(messages_to_receiver)
 
@@ -97,7 +97,7 @@ def receive_single():
     message  = models.Message.objects.get(id=id)
     messages_to_receiver.append({'from': message.sender, 'message': message.content,
                                  'photo': message.photo, 'created_at': str(message.created_at),
-                                 'keo_time': message.keo_time})
+                                 'keo_time': str(message.keo_time)})
 
     return json.dumps(messages_to_receiver)
 
