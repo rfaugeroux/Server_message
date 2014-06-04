@@ -48,6 +48,7 @@ def send():
 
         if user.os=="ios":
             print "Trying to send an ios push notification..."
+            #apns = APNs(use_sandbox=app.debug, cert_file='KeoCert.pem', key_file='KeoKey.pem')
             apns = APNs(use_sandbox=True, cert_file='KeoCert.pem', key_file='KeoKey.pem')
             payload = Payload(alert="You got a new Keo", sound="default", badge=1)
             apns.gateway_server.send_notification(user.reg_id, payload)
@@ -55,22 +56,34 @@ def send():
 
     return "Message sent"
 
+@app.route('/confirmLastUpdate', methods=['POST'])
+def confirmLastUpdate():
+    receiver = request.form['to']
+    str_update_time = request.form['update_time']
+
+    user_to_update = models.Global_User.objects.gets(email=receiver)
+    user_to_update.last_update = datetime.datetime.strptime(str_update_time, "%Y-%m-%d %H:%M:%S.%f")
+    user_to_update.save()
+
+    return "User updated"
 
 @app.route('/receive', methods=['GET'])
 def receive():
     receiver = request.args.get('to')
     #timestamp = request.args.get('timestamp')
 
-    timestamp = datetime.datetime.now() - datetime.timedelta(weeks=15)
+    user = models.Global_User.objects.get(email=receiver)
+    timestamp = user.last_update
+    new_update_time = datetime.datetime.now()
 
     messages_to_receiver = []
 
     """Collect the messages sent to the receiver"""
-    for message in models.Message.objects(receiver=receiver, delivery_time__lte=datetime.datetime.now(),
+    for message in models.Message.objects(receiver=receiver, delivery_time__lte=new_update_time,
                                           delivery_time__gte=timestamp):
         messages_to_receiver.append({'from': message.sender, 'message': message.content,
                                      'photo': message.photo,'created_at': str(message.created_at),
-                                     'keo_time': str(message.keo_time)})
+                                     'keo_time': str(message.keo_time), 'update_time': str(new_update_time)})
 
     return json.dumps(messages_to_receiver)
 
