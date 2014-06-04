@@ -7,7 +7,7 @@ from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
 from gcm import GCM
 from gcm.gcm import GCMException
-#from apnsclient import Message, APNs
+from apns import APNs, Payload
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 
@@ -46,24 +46,11 @@ def send():
                 print e
 
         #Not used yet
-        if user.os=="ios" and False:
-            con = Session.new_connection("push_sandbox", cert_file="ck.pem", passphrase=passphrase)
-            message = Message([user.reg_id], alert="Gauthier, tu as un nouveau message !", badge=1)
-            srv = APNs(con)
-            res = srv.send(message)
-            # Check failures. Check codes in APNs reference docs.
-            for token, reason in res.failed.items():
-                code, errmsg = reason
-                print "Device failed: {0}, reason: {1}".format(token, errmsg)
+        if user.os=="ios":
+            apns = APNs(use_sandbox=False, cert_file='KeoCert.pem', key_file='KeoKey.pem')
+            payload = Payload(alert="You got a new Keo", sound="default", badge=1)
+            apns.gateway_server.send_notification(user.reg_id, payload)
 
-            # Check failures not related to devices.
-            for code, errmsg in res.errors:
-                print "Error: ", errmsg
-
-            # Check if there are tokens that can be retried
-            if res.needs_retry():
-                # repeat with retry_message or reschedule your task
-                retry_message = res.retry()
 
     return "Message sent"
 
