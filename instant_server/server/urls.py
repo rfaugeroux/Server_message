@@ -3,8 +3,8 @@ import datetime
 from flask import request
 from instant_server.server import app
 from instant_server.db import models
-from mongoengine.queryset import DoesNotExist
 from mongoengine import ValidationError
+from mongoengine.queryset import DoesNotExist
 from gcm import GCM
 from gcm.gcm import GCMException
 from apns import APNs, Payload
@@ -47,7 +47,7 @@ def send():
 
         #Not used yet
         if user.os=="ios":
-            apns = APNs(use_sandbox=False, cert_file='KeoCert.pem', key_file='KeoKey.pem')
+            apns = APNs(use_sandbox=app.debug, cert_file='KeoCert.pem', key_file='KeoKey.pem')
             payload = Payload(alert="You got a new Keo", sound="default", badge=1)
             apns.gateway_server.send_notification(user.reg_id, payload)
 
