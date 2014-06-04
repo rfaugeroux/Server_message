@@ -64,7 +64,7 @@ def confirmLastUpdate():
     print "New update time for " + receiver + ": " + str_update_time
     print datetime.datetime.strptime(str_update_time, "%Y-%m-%d %H:%M:%S.%f")
 
-    user_to_update = models.Global_User.objects.gets(email=receiver)
+    user_to_update = models.Global_User.objects.get(email=receiver)
     user_to_update.last_update = datetime.datetime.strptime(str_update_time, "%Y-%m-%d %H:%M:%S.%f")
     user_to_update.save()
 
