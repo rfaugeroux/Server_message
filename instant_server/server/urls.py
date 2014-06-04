@@ -22,7 +22,7 @@ def send():
     minutes = request.form.get('keo_time', default=0, type=int)
     photo = request.form.get('photo', default="")
 
-    delta = datetime.timedelta(minutes = minutes)
+    delta = datetime.timedelta(minutes=minutes)
 
     #Save the message in the database
     message = models.Message(sender=sender, receiver=receiver_id, 
@@ -60,6 +60,9 @@ def send():
 def confirmLastUpdate():
     receiver = request.form['to']
     str_update_time = request.form['update_time']
+
+    print "New update time for " + receiver + ": " + str_update_time
+    print datetime.datetime.strptime(str_update_time, "%Y-%m-%d %H:%M:%S.%f")
 
     user_to_update = models.Global_User.objects.gets(email=receiver)
     user_to_update.last_update = datetime.datetime.strptime(str_update_time, "%Y-%m-%d %H:%M:%S.%f")
