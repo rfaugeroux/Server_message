@@ -46,9 +46,9 @@ def send():
             except Exception, e:
                 print e
 
-        #Not used yet
         if user.os=="ios":
-            apns = APNs(use_sandbox=app.debug, cert_file='KeoCert.pem', key_file='KeoKey.pem')
+            print "Trying to send an ios push notification..."
+            apns = APNs(use_sandbox=True, cert_file='KeoCert.pem', key_file='KeoKey.pem')
             payload = Payload(alert="You got a new Keo", sound="default", badge=1)
             apns.gateway_server.send_notification(user.reg_id, payload)
 
