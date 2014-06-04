@@ -11,6 +11,7 @@ from apns import APNs, Payload
 
 GCM_API_KEY = "AIzaSyCWn_dNhBHFITuVAOAG2r_KDlV5KROg-Oo"
 
+
 @app.route('/send', methods=['POST'])
 def send():
 
